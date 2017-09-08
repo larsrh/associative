@@ -1,0 +1,20 @@
+function(get_contents VAR)
+	set(TEMP "")
+	foreach(FOLDER in ${ARGN})
+		file(GLOB_RECURSE SRCS ${FOLDER}/*.cpp)
+		set(TEMP ${TEMP} ${SRCS})
+	endforeach(FOLDER)
+	set(${VAR} ${TEMP} PARENT_SCOPE)
+endfunction(get_contents)
+
+function(generate_modules FOLDER MACRO SUFFIX DEST)
+	execute_process(COMMAND "${CMAKE_CURRENT_SOURCE_DIR}/cmake/generate-modules.sh" ${FOLDER} ${MACRO} ${SUFFIX} ${CMAKE_CURRENT_BINARY_DIR}/gen/${DEST} ${ARGN} WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
+endfunction(generate_modules)
+
+generate_modules("actions/impl" ASSOCIATIVE_ACTIONS_INIT "Action" "action_impls.hpp")
+generate_modules("db/impl" ASSOCIATIVE_DB_INIT "Provider" "db_impls.hpp")
+generate_modules("isolation/impl" ASSOCIATIVE_ISOLEVEL_INIT "Isolation" "isolevel_impls.hpp" "IsolationLevel" "IsolationLevels")
+
+get_contents(CORE_SRCS db env objects isolation target util)
+get_contents(MAIN_SRCS actions)
+get_contents(TEST_SRCS test)
