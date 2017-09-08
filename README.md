@@ -1,2 +1,1 @@
-# associative
-An associative file system (ARCHIVED)
+This is archived code from my Bachelor's Thesis: Devlopment of an associative file system.
